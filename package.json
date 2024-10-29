@@ -2,10 +2,14 @@
   "name": "isaac-coffee-api",
   "version": "1.0.50",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/index.ts"
+    "test": "bun test",
+    "dev": "bun run --watch src/index.ts",
+    "build": "bun build src/index.ts --target bun --outdir ./dist",
+    "start": "NODE_ENV=production bun dist/index.js"
   },
   "dependencies": {
+    "@elysiajs/swagger": "^1.1.5",
+    "bun": "^1.1.33",
     "elysia": "latest"
   },
   "devDependencies": {
