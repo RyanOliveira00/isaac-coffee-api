@@ -1,22 +1,54 @@
 import { Elysia } from "elysia";
-import { ProductDto, BuyProductDto } from "../models/product.model";
+import {
+  ProductDto,
+  BuyProductDto,
+  ProductsResponseDto,
+  ProductResponseDto,
+  MessageResponseDto,
+} from "../models/product.model";
 import { generateId } from "../libs/utils";
 import { productsRepository } from "../repositories/products-repository";
 
-export const productsController = new Elysia({ prefix: "/products" })
-  .get("/", () => productsRepository.findAll())
-
-  .get("/:id", ({ params: { id } }) => {
-    const product = productsRepository.findById(id);
-    if (!product) throw new Error("Product not found");
-    return product;
+export const productsController = new Elysia({ prefix: "/products", tags: ["Products"] })
+  .get("/", () => productsRepository.findAll(), {
+    response: ProductsResponseDto,
+    detail: {
+      summary: "List all products",
+      tags: ["products"],
+    },
   })
 
-  .get("/search/:name", ({ params: { name } }) => {
-    const product = productsRepository.findByName(name);
-    if (!product) throw new Error("Product not found");
-    return product;
-  })
+  .get(
+    "/:id",
+    ({ params: { id } }) => {
+      const product = productsRepository.findById(id);
+      if (!product) throw new Error("Product not found");
+      return product;
+    },
+    {
+      response: ProductResponseDto,
+      detail: {
+        summary: "Find product by ID",
+        tags: ["products"],
+      },
+    },
+  )
+
+  .get(
+    "/search/:name",
+    ({ params: { name } }) => {
+      const product = productsRepository.findByName(name);
+      if (!product) throw new Error("Product not found");
+      return product;
+    },
+    {
+      response: ProductResponseDto,
+      detail: {
+        summary: "Find product by name",
+        tags: ["products"],
+      },
+    },
+  )
 
   .post(
     "/",
@@ -32,6 +64,11 @@ export const productsController = new Elysia({ prefix: "/products" })
     },
     {
       body: ProductDto,
+      response: ProductResponseDto,
+      detail: {
+        summary: "List all products",
+        tags: ["products"],
+      },
     },
   )
 
@@ -52,14 +89,29 @@ export const productsController = new Elysia({ prefix: "/products" })
     },
     {
       body: ProductDto,
+      response: ProductResponseDto,
+      detail: {
+        summary: "Update product by ID",
+        tags: ["products"],
+      },
     },
   )
 
-  .delete("/:id", ({ params: { id } }) => {
-    const removed = productsRepository.remove(id);
-    if (!removed) throw new Error("Product not found");
-    return { message: "Product removed successfully" };
-  })
+  .delete(
+    "/:id",
+    ({ params: { id } }) => {
+      const removed = productsRepository.remove(id);
+      if (!removed) throw new Error("Product not found");
+      return { message: "Product removed successfully" };
+    },
+    {
+      response: MessageResponseDto,
+      detail: {
+        summary: "Remove product by ID",
+        tags: ["products"],
+      },
+    },
+  )
 
   .post(
     "/:id/buy",
@@ -79,5 +131,10 @@ export const productsController = new Elysia({ prefix: "/products" })
     },
     {
       body: BuyProductDto,
+      response: ProductResponseDto,
+      detail: {
+        summary: "Buy product",
+        tags: ["products"],
+      },
     },
   );
