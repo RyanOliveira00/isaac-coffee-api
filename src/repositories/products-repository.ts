@@ -37,6 +37,10 @@ class ProductsRepository {
     return this.products.find((product) => product.id === id);
   }
 
+  findByName(name: string): Product | undefined {
+    return this.products.find((product) => product.name === name);
+  }
+
   update(id: string, updates: Partial<Product>): void {
     const index = this.products.findIndex((product) => product.id === id);
     if (index !== -1) {
